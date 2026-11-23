@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rúbrica — Presentación Final</title>
+<style>
+  :root{
+    --bg:#faf9f5;
+    --ink:#14110D;
+    --ink-soft:#4a423a;
+    --muted:#8A7F70;
+    --line:#e4ddd0;
+    --panel:#ffffff;
+    --accent:#E08A22;
+    --accent-soft:#f7e3c5;
+    --teal:#35857A;
+    --teal-soft:#dcefec;
+    --bad:#b5432f;
+    --bad-soft:#f6e0db;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    padding:40px 24px 80px;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+    line-height:1.5;
+  }
+  .wrap{max-width:980px;margin:0 auto;}
+  header{margin-bottom:32px;}
+  .eyebrow{
+    font-family:"JetBrains Mono",monospace;
+    font-size:13px;
+    letter-spacing:0.18em;
+    text-transform:uppercase;
+    color:var(--accent);
+    margin-bottom:10px;
+  }
+  h1{font-size:clamp(28px,4vw,42px);line-height:1.1;margin:0 0 12px;letter-spacing:-0.01em;}
+  .subtitle{color:var(--ink-soft);font-size:17px;max-width:70ch;margin:0;}
+  code{font-family:"JetBrains Mono",monospace;font-size:0.9em;background:var(--bg);padding:1px 5px;border-radius:4px;border:1px solid var(--line);}
+
+  .card{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:24px 28px;
+    margin-bottom:24px;
+  }
+  .card h2{font-size:19px;margin:0 0 14px;display:flex;align-items:center;gap:10px;}
+  .card h2 .num{
+    font-family:"JetBrains Mono",monospace;
+    font-size:13px;
+    color:var(--accent);
+    background:var(--accent-soft);
+    border-radius:999px;
+    padding:2px 10px;
+  }
+  .card p.lead{color:var(--ink-soft);font-size:14px;margin:0 0 14px;}
+
+  /* Estructura de la presentación */
+  .flow{list-style:none;margin:0;padding:0;display:grid;gap:10px;counter-reset:step;}
+  .flow li{
+    display:grid;grid-template-columns:28px 1fr;gap:12px;align-items:start;
+    padding:12px 14px;
+    background:var(--bg);
+    border:1px solid var(--line);
+    border-radius:10px;
+    font-size:15px;
+  }
+  .flow li::before{
+    counter-increment:step;
+    content:counter(step);
+    font-family:"JetBrains Mono",monospace;
+    font-weight:600;
+    color:var(--accent);
+  }
+  .flow li b{display:block;}
+  .flow li span{color:var(--ink-soft);font-size:14px;}
+
+  .timing-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  @media (max-width:640px){.timing-grid{grid-template-columns:1fr;}}
+  .timing-box{border:1px solid var(--line);border-radius:10px;padding:16px 20px;background:var(--bg);}
+  .timing-box .who{
+    font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:0.1em;
+    text-transform:uppercase;color:var(--muted);margin-bottom:4px;
+  }
+  .timing-box .range{font-size:26px;font-weight:700;}
+  .timing-box .range span{font-size:15px;font-weight:400;color:var(--ink-soft);}
+
+  table{width:100%;border-collapse:collapse;font-size:14px;}
+  th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top;}
+  th{
+    font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:0.08em;
+    text-transform:uppercase;color:var(--muted);font-weight:600;
+  }
+
+  /* Tabla de resultados ejemplo */
+  .results td,.results th{text-align:center;}
+  .results td:first-child,.results th:first-child{text-align:left;}
+  .results tr.best td{background:var(--teal-soft);font-weight:600;}
+  .results td.na{color:var(--muted);}
+
+  /* Rúbrica */
+  .rubric td.pts{
+    font-family:"JetBrains Mono",monospace;font-weight:700;color:var(--accent);
+    white-space:nowrap;text-align:center;width:60px;
+  }
+  .rubric td.crit{font-weight:600;width:28%;}
+  .rubric td.full{width:36%;}
+  .rubric th.c{text-align:center;}
+  .rubric tr.total td{border-top:2px solid var(--ink);border-bottom:none;font-weight:700;}
+  .tag{
+    display:inline-block;font-family:"JetBrains Mono",monospace;font-size:10px;
+    letter-spacing:0.06em;text-transform:uppercase;border-radius:999px;padding:1px 8px;margin-bottom:4px;
+  }
+  .tag.ok{background:var(--teal-soft);color:var(--teal);}
+  .tag.no{background:var(--bad-soft);color:var(--bad);}
+  @media (max-width:700px){
+    .rubric thead{display:none;}
+    .rubric tr{display:block;border-bottom:1px solid var(--line);padding:8px 0;}
+    .rubric td{display:block;border:none;padding:4px 0;width:auto !important;text-align:left !important;}
+  }
+
+  .checklist{list-style:none;margin:0;padding:0;display:grid;gap:8px;}
+  .checklist li{
+    display:flex;gap:12px;align-items:flex-start;
+    padding:10px 14px;background:var(--bg);border:1px solid var(--line);border-radius:10px;font-size:14px;
+  }
+  .checklist li::before{
+    content:"";flex:0 0 16px;height:16px;margin-top:2px;
+    border:1.5px solid var(--ink-soft);border-radius:4px;
+  }
+
+  .callout{
+    border-left:3px solid var(--accent);background:var(--accent-soft);
+    padding:14px 18px;border-radius:0 10px 10px 0;font-size:14px;margin-top:14px;
+  }
+  .callout.bad{border-left-color:var(--bad);background:var(--bad-soft);}
+  .callout strong{display:block;margin-bottom:4px;}
+
+  .not-graded{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:8px;}
+  .not-graded li{
+    font-size:13px;padding:6px 12px;background:var(--bg);
+    border:1px dashed var(--line);border-radius:999px;color:var(--ink-soft);
+  }
+
+  .sheet{border:1px solid var(--line);border-radius:14px;padding:24px 28px;background:var(--panel);}
+  .sheet-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
+  @media (max-width:640px){.sheet-row{grid-template-columns:1fr;}}
+  .field label{
+    display:block;font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:0.06em;
+    text-transform:uppercase;color:var(--muted);margin-bottom:4px;
+  }
+  .field .line{border-bottom:1px solid var(--ink-soft);height:26px;}
+  .score-table th,.score-table td{padding:8px 10px;}
+  .score-table input[type=text]{
+    width:100%;border:none;border-bottom:1px solid var(--line);
+    background:transparent;font-size:14px;padding:4px 2px;font-family:inherit;
+  }
+  .score-table td.crit-name{font-weight:600;}
+  .score-table td.max{font-family:"JetBrains Mono",monospace;color:var(--muted);text-align:center;}
+  .total-row td{font-weight:700;border-top:2px solid var(--ink);border-bottom:none;padding-top:14px;}
+
+  footer{margin-top:36px;font-size:13px;color:var(--muted);border-top:1px solid var(--line);padding-top:16px;}
+
+  @media print{
+    body{background:#fff;padding:0;}
+    .card,.sheet{break-inside:avoid;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="eyebrow">Presentación final · 15% de la nota de proyecto (60%)</div>
+    <h1>Rúbrica — Presentación Final</h1>
+    <p class="subtitle">
+      La historia completa del proyecto en una sola presentación: <strong>dataset → insights →
+      problema de predicción → modelo → resultados</strong>. Lo que se evalúa no es qué tan alto
+      sale el score, sino que entiendan y puedan explicar cada decisión que tomaron.
+    </p>
+  </header>
+
+  <!-- 1. QUÉ DEBE INCLUIR -->
+  <div class="card">
+    <h2><span class="num">1</span> La presentación debe incluir</h2>
+    <ol class="flow">
+      <li><div><b>Resumen del dataset</b><span>Qué es, de dónde viene, cuántas filas, qué representa cada fila.</span></div></li>
+      <li><div><b>Insights principales del EDA</b><span>Los 2–3 hallazgos más importantes de la Fase 1 (pueden reutilizar gráficos).</span></div></li>
+      <li><div><b>Tipo de problema</b><span>Qué quieren predecir (<code>y</code>), con qué variables (<code>X</code>), y si es regresión o clasificación — y por qué.</span></div></li>
+      <li><div><b>Métricas en entrenamiento y validación</b><span>Para cada modelo probado, comparados contra un baseline. ¿Hay overfitting?</span></div></li>
+      <li><div><b>Score en test</b><span>Del modelo elegido, evaluado una sola vez al final. Qué significa ese número en palabras simples.</span></div></li>
+      <li><div><b>Feature importance</b><span>Qué variables usa más el modelo (<code>feature_importances_</code>, coeficientes, o similar). ¿Coincide con lo que vieron en el EDA?</span></div></li>
+      <li><div><b>Conclusión</b><span>¿Sirve el modelo? ¿Qué harían diferente o qué falta?</span></div></li>
+    </ol>
+  </div>
+
+  <!-- 2. TABLA DE RESULTADOS -->
+  <div class="card">
+    <h2><span class="num">2</span> Tabla de resultados (mínimo esperado)</h2>
+    <p class="lead">
+      Incluyan una tabla como esta en la presentación y en el README. El test solo se reporta
+      para el modelo elegido en validación. Ejemplo ilustrativo (estilo del ejercicio de Spotify en clase):
+    </p>
+    <table class="results">
+      <thead>
+        <tr><th>Modelo</th><th>Train</th><th>Validación</th><th>Test</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Baseline (clase más común)</td><td>49%</td><td>49%</td><td class="na">—</td></tr>
+        <tr><td>KNN (k = 15)</td><td>71%</td><td>66%</td><td class="na">—</td></tr>
+        <tr class="best"><td>Árbol de decisión (max_depth = 5) ✓</td><td>82%</td><td>77%</td><td>75%</td></tr>
+      </tbody>
+    </table>
+    <div class="callout">
+      <strong>Métrica según el tipo de problema</strong>
+      Clasificación → accuracy (y mencionar si las clases están desbalanceadas).
+      Regresión → MAE o RMSE, en las unidades de <code>y</code> (ej. "se equivoca en promedio por $1,200").
+    </div>
+  </div>
+
+  <!-- 3. TIEMPOS -->
+  <div class="card">
+    <h2><span class="num">3</span> Tiempos (incluye preguntas)</h2>
+    <div class="timing-grid">
+      <div class="timing-box"><div class="who">Individual</div><div class="range">5 – 8 <span>min</span></div></div>
+      <div class="timing-box"><div class="who">Equipo de 2</div><div class="range">8 – 12 <span>min</span></div></div>
+    </div>
+  </div>
+
+  <!-- 4. RÚBRICA -->
+  <div class="card">
+    <h2><span class="num">4</span> Rúbrica (100 pts)</h2>
+    <table class="rubric">
+      <thead>
+        <tr><th>Criterio</th><th class="c">Pts</th><th>Completo</th><th>Parcial / falta</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="crit">Resumen del dataset e insights</td>
+          <td class="pts">10</td>
+          <td class="full"><span class="tag ok">Completo</span><br>Explica el dataset en sus palabras y conecta 2–3 insights del EDA con el problema que eligió.</td>
+          <td><span class="tag no">Parcial</span><br>Solo lee columnas, o los insights no tienen relación con el modelo.</td>
+        </tr>
+        <tr>
+          <td class="crit">Tipo de problema</td>
+          <td class="pts">15</td>
+          <td class="full"><span class="tag ok">Completo</span><br><code>y</code> y <code>X</code> claros y razonables, identifica correctamente regresión vs. clasificación, sin leakage evidente.</td>
+          <td><span class="tag no">Parcial</span><br>Tipo de problema mal identificado, o <code>X</code> incluye la respuesta (o algo derivado de ella).</td>
+        </tr>
+        <tr>
+          <td class="crit">Métricas train / validación</td>
+          <td class="pts">20</td>
+          <td class="full"><span class="tag ok">Completo</span><br>Reporta train y validación para 2+ modelos y un baseline; elige el mejor por validación y comenta si hay overfitting.</td>
+          <td><span class="tag no">Parcial</span><br>Un solo modelo, sin baseline, o elige el modelo por el score de train/test.</td>
+        </tr>
+        <tr>
+          <td class="crit">Score en test</td>
+          <td class="pts">10</td>
+          <td class="full"><span class="tag ok">Completo</span><br>Reporta test del modelo final y explica qué significa en lenguaje simple.</td>
+          <td><span class="tag no">Parcial</span><br>No hay test, o da el número sin poder explicarlo.</td>
+        </tr>
+        <tr>
+          <td class="crit">Feature importance</td>
+          <td class="pts">10</td>
+          <td class="full"><span class="tag ok">Completo</span><br>Gráfico de importancia de variables y lo interpreta (¿tiene sentido? ¿coincide con el EDA?).</td>
+          <td><span class="tag no">Parcial</span><br>Muestra el gráfico sin interpretarlo, o no lo incluye.</td>
+        </tr>
+        <tr>
+          <td class="crit">Todo en GitHub</td>
+          <td class="pts">20</td>
+          <td class="full"><span class="tag ok">Completo</span><br>Se cumple todo el checklist de la sección 5.</td>
+          <td><span class="tag no">Parcial</span><br>Falta el notebook final, el README, o el código no corresponde a lo presentado.</td>
+        </tr>
+        <tr>
+          <td class="crit">Presentación y preguntas</td>
+          <td class="pts">15</td>
+          <td class="full"><span class="tag ok">Completo</span><br>Narrativa clara, dentro del tiempo, y responde con soltura "¿por qué este <code>y</code>?", "¿por qué este modelo?".</td>
+          <td><span class="tag no">Parcial</span><br>Fuera de tiempo, o no puede explicar sus propias decisiones.</td>
+        </tr>
+        <tr class="total"><td>Total</td><td class="pts">100</td><td></td><td></td></tr>
+      </tbody>
+    </table>
+    <div class="callout">
+      <strong>Cómo puntuar</strong>
+      Completo = puntaje total del criterio. Parcial = aproximadamente la mitad. No presentado = 0.
+    </div>
+  </div>
+
+  <!-- 5. GITHUB -->
+  <div class="card">
+    <h2><span class="num">5</span> Checklist de GitHub</h2>
+    <p class="lead">Se revisa el repo, no solo lo que aparece en pantalla. Todo debe estar pusheado <strong>antes</strong> de presentar.</p>
+    <ul class="checklist">
+      <li>Notebook de EDA (Fase 1) en el repo.</li>
+      <li>Notebook del modelo final: split train/val/test, modelos probados, métricas, test y feature importance.</li>
+      <li>El notebook corre de arriba a abajo sin errores y genera exactamente lo mostrado en la presentación.</li>
+      <li><code>README.md</code> con: descripción del dataset, problema (<code>y</code>, <code>X</code>, tipo), tabla de resultados y conclusión.</li>
+      <li>Los datos están en el repo, o el README tiene el link de Kaggle e instrucciones para descargarlos.</li>
+      <li>Las slides (PDF) o el link a ellas están en el repo.</li>
+      <li>Historial de commits a lo largo del proyecto (no un solo commit la noche anterior).</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2><span class="num">✕</span> Explícitamente NO se evalúa</h2>
+    <ul class="not-graded">
+      <li>Alcanzar un score mínimo</li>
+      <li>Tuning extenso de hiperparámetros</li>
+      <li>Modelos más allá de scikit-learn básico</li>
+      <li>Que el código lo haya escrito Copilot</li>
+    </ul>
+  </div>
+
+  <!-- HOJA DE EVALUACIÓN -->
+  <div class="sheet">
+    <h2 style="margin-top:0;">Hoja de evaluación</h2>
+    <div class="sheet-row">
+      <div class="field"><label>Nombre(s)</label><div class="line"></div></div>
+      <div class="field"><label>Link al repo de GitHub</label><div class="line"></div></div>
+    </div>
+    <div class="sheet-row">
+      <div class="field"><label>Dataset / y / tipo de problema</label><div class="line"></div></div>
+      <div class="field"><label>Tiempo real</label><div class="line"></div></div>
+    </div>
+    <table class="score-table">
+      <thead>
+        <tr><th>Criterio</th><th style="text-align:center;">Máx</th><th>Puntaje / comentario</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="crit-name">Resumen del dataset e insights</td><td class="max">10</td><td><input type="text"></td></tr>
+        <tr><td class="crit-name">Tipo de problema</td><td class="max">15</td><td><input type="text"></td></tr>
+        <tr><td class="crit-name">Métricas train / validación</td><td class="max">20</td><td><input type="text"></td></tr>
+        <tr><td class="crit-name">Score en test</td><td class="max">10</td><td><input type="text"></td></tr>
+        <tr><td class="crit-name">Feature importance</td><td class="max">10</td><td><input type="text"></td></tr>
+        <tr><td class="crit-name">Todo en GitHub</td><td class="max">20</td><td><input type="text"></td></tr>
+        <tr><td class="crit-name">Presentación y preguntas</td><td class="max">15</td><td><input type="text"></td></tr>
+        <tr class="total-row"><td>Total</td><td class="max">100</td><td><input type="text"></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <footer>
+    Presentación final · 15% de la nota de proyecto (60% de la nota final).
+    Ver <code>04-project-phases.md</code> para el detalle de todas las fases y
+    <code>07-ml-unit-plan.md</code> para el contenido de la unidad de ML.
+  </footer>
+
+</div>
+</body>
+</html>

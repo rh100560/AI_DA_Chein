@@ -6,6 +6,8 @@ dependencies = [
     "ipykernel>=7.3.0",
     "matplotlib>=3.11.2",
     "pandas>=3.0.6",
+    "python-pptx>=1.0.2",
+    "scikit-learn>=1.4",
     "scipy>=1.18.1",
     "seaborn>=0.13.2",
 ]
